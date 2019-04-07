@@ -15,7 +15,7 @@
     cannot, write to the Free Software Foundation, 59 Temple Place
     Suite 330, Boston, MA 02111-1307, USA.  Or www.fsf.org
 
-    Copyright ©2006-2007 puck_lock
+    Copyright ï¿½2006-2007 puck_lock
     with contributions from others; see the CREDITS file
                                                                    */
 //==================================================================//
@@ -590,7 +590,7 @@ void APar_Print_iTunesData(const char *path, char* output_path, uint8_t suppleme
 					artwork_count++;
 					
 				} else {
-					//converts iso8859 © in '©ART' to a 2byte utf8 © glyph; replaces libiconv conversion
+					//converts iso8859 ï¿½ in 'ï¿½ART' to a 2byte utf8 ï¿½ glyph; replaces libiconv conversion
 					memset(twenty_byte_buffer, 0, sizeof(char)*20);
 					isolat1ToUTF8((unsigned char*)twenty_byte_buffer, 10, (unsigned char*)parent->AtomicName, 4);
 
@@ -631,20 +631,20 @@ void APar_Print_iTunesData(const char *path, char* output_path, uint8_t suppleme
 		//APar_DetermineDynamicUpdate(true); //gets the size of the padding
 		APar_Optimize(true); //just to know if 'free' atoms can be considered padding, or (in the case of say a faac file) it's *just* 'free'
 		
-		if (supplemental_info && 0x02) { //PRINT_FREE_SPACE
+		if (supplemental_info & 0x02) { //PRINT_FREE_SPACE
 			fprintf(stdout, "free atom space: %" PRIu32 "\n", APar_ProvideTallyForAtom("free") );
 		}
-		if (supplemental_info && 0x04) { //PRINT_PADDING_SPACE
+		if (supplemental_info & 0x04) { //PRINT_PADDING_SPACE
 			if (!moov_atom_was_mooved) {
 				fprintf(stdout, "padding available: %" PRIu64 " bytes\n", dynUpd.padding_bytes);
 			} else {
 				fprintf(stdout, "padding available: 0 (reorg)\n");
 			}
 		}
-		if (supplemental_info && 0x08 && dynUpd.moov_udta_atom != NULL) { //PRINT_USER_DATA_SPACE
+		if (supplemental_info & 0x08 && dynUpd.moov_udta_atom != NULL) { //PRINT_USER_DATA_SPACE
 			fprintf(stdout, "user data space: %" PRIu64 "\n", dynUpd.moov_udta_atom->AtomicLength);
 		}
-		if (supplemental_info && 0x10) { //PRINT_USER_DATA_SPACE
+		if (supplemental_info & 0x10) { //PRINT_USER_DATA_SPACE
 			fprintf(stdout, "media data space: %" PRIu32 "\n", APar_ProvideTallyForAtom("mdat") );
 		}
 	}
@@ -1396,9 +1396,9 @@ void APar_PrintAtomicTree() {
 		memset(twenty_byte_buffer, 0, sizeof(char)*20);
 		
 		if (thisAtom->uuid_ap_atomname != NULL) {
-			isolat1ToUTF8((unsigned char*)twenty_byte_buffer, 10, (unsigned char*)thisAtom->uuid_ap_atomname, 4); //converts iso8859 © in '©ART' to a 2byte utf8 © glyph
+			isolat1ToUTF8((unsigned char*)twenty_byte_buffer, 10, (unsigned char*)thisAtom->uuid_ap_atomname, 4); //converts iso8859 ï¿½ in 'ï¿½ART' to a 2byte utf8 ï¿½ glyph
 		} else {
-			isolat1ToUTF8((unsigned char*)twenty_byte_buffer, 10, (unsigned char*)thisAtom->AtomicName, 4); //converts iso8859 © in '©ART' to a 2byte utf8 © glyph
+			isolat1ToUTF8((unsigned char*)twenty_byte_buffer, 10, (unsigned char*)thisAtom->AtomicName, 4); //converts iso8859 ï¿½ in 'ï¿½ART' to a 2byte utf8 ï¿½ glyph
 		}
 		
 		
