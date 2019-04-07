@@ -15,7 +15,7 @@
     cannot, write to the Free Software Foundation, 59 Temple Place
     Suite 330, Boston, MA 02111-1307, USA.  Or www.fsf.org
 
-    Copyright ©2006-2007 puck_lock
+    Copyright ï¿½2006-2007 puck_lock
     with contributions from others; see the CREDITS file
                                                                    */
 //==================================================================//
@@ -119,12 +119,12 @@ uint32_t APar_4CC_CreatorCode(const char* filepath, uint32_t new_type_code) {
 		NSDictionary* output_attributes = [NSDictionary dictionaryWithObjectsAndKeys:creator_code, NSFileHFSCreatorCode, 
 																																							type_code, NSFileHFSTypeCode, nil];
 		
-		if (![[NSFileManager defaultManager] changeFileAttributes:output_attributes atPath:inFile]) {
+		if (![[NSFileManager defaultManager] setAttributes:output_attributes ofItemAtPath:inFile error:nil]) {
 			NSLog(@" AtomicParsley error: setting type and creator code on %@", inFile);
 		}																																					
 				
 	} else {
-		NSDictionary* file_attributes = [[NSFileManager defaultManager] fileAttributesAtPath:inFile traverseLink:YES];
+		NSDictionary* file_attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:inFile error:nil];
 		return_value = [[file_attributes objectForKey:NSFileHFSTypeCode] unsignedLongValue ];
 		
 		//NSLog(@"code: %@\n", [file_attributes objectForKey:NSFileHFSTypeCode] );
@@ -145,10 +145,10 @@ void APar_SupplySelectiveTypeCreatorCodes(const char *inputPath, const char *out
 		return;
 	}
 	
-	char* input_suffix = strrchr(inputPath, '.');
+	const char* input_suffix = strrchr(inputPath, '.');
 	//user-defined output paths may have the original file as ".m4a" & show up fine when output to ".m4a"
 	//output to ".mp4" and it becomes a generic (sans TYPE/CREATOR) file that defaults to Quicktime Player
-	char* output_suffix = strrchr(outputPath, '.');
+	const char* output_suffix = strrchr(outputPath, '.');
 	
 	char* typecode = (char*)malloc( sizeof(char)* 4 );
 	memset(typecode, 0, sizeof(char)*4);

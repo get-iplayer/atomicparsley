@@ -15,7 +15,7 @@
     cannot, write to the Free Software Foundation, 59 Temple Place
     Suite 330, Boston, MA 02111-1307, USA.  Or www.fsf.org
 
-    Copyright ©2005-2007 puck_lock
+    Copyright ï¿½2005-2007 puck_lock
     with contributions from others; see the CREDITS file
                                                                    */
 //==================================================================//
@@ -48,7 +48,7 @@ void DetermineType(const char *picfilePath) {
 }
 
 char* DeriveNewPath(const char *filePath, PicPrefs myPicPrefs, char* newpath) {
-	char* suffix = strrchr(filePath, '.');
+	const char* suffix = strrchr(filePath, '.');
 	
 	size_t filepath_len = strlen(filePath);
 	memset(newpath, 0, MAXPATHLEN+1);
@@ -89,7 +89,6 @@ bool ResizeGivenImage(const char* filePath, PicPrefs myPicPrefs, char* resized_p
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSImage* source = [ [NSImage alloc] initWithContentsOfFile: [NSString stringWithUTF8String: filePath] ];
-	[source setScalesWhenResized: YES];
 	if ( source == nil ) {
 		fprintf( stderr, "Image '%s' could not be loaded.\n", filePath );
     exit (1);
@@ -191,8 +190,8 @@ bool ResizeGivenImage(const char* filePath, PicPrefs myPicPrefs, char* resized_p
 		NSEraseRect( destinationRect );
 		[source drawInRect: destinationRect
 							fromRect: destinationRect
-							operation: NSCompositeCopy fraction: 1.0];
-        
+				 			operation: NSCompositingOperationCopy fraction: 1.0];
+
 		NSBitmapImageRep* bitmap = [ [NSBitmapImageRep alloc]
 																	initWithFocusedViewRect: destinationRect ];
 		NSBitmapImageFileType filetype;
