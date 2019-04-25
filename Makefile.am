@@ -34,11 +34,6 @@ AtomicParsley_SOURCES = \
 .mm.o:
 	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_OBJCFLAGS) $(OBJCFLAGS) -c -o $@ $<
 
-if DARWIN
-AtomicParsley_SOURCES += \
-	src/nsfile.mm 
-endif
-
 if NEED_GETOPT
 AtomicParsley_SOURCES += \
 	src/extras/getopt.c \
