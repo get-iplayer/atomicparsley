@@ -393,13 +393,6 @@ void APar_Mark_UserData_area(uint8_t track_num, short userdata_atom,
 void APar_PrintAtomicTree();
 void APar_SimpleAtomPrintout();
 
-uint32_t APar_4CC_CreatorCode(const char* filepath, uint32_t new_type_code);
-void APar_SupplySelectiveTypeCreatorCodes(const char *inputPath,
-  const char *outputPath, uint8_t forced_type_code);
-
-bool ResizeGivenImage(const char* filePath, PicPrefs myPicPrefs,
-  char* resized_path);
-
 char* GenreIntToString(int genre);
 uint8_t StringGenreToInt(const char* genre_string);
 void ListGenresValues();
