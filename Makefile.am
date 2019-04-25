@@ -36,8 +36,7 @@ AtomicParsley_SOURCES = \
 
 if DARWIN
 AtomicParsley_SOURCES += \
-	src/nsfile.mm \
-	src/nsimage.mm
+	src/nsfile.mm 
 endif
 
 if NEED_GETOPT
