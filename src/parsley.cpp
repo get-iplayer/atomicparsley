@@ -4706,10 +4706,6 @@ void APar_WriteFile(const char* ISObasemediafile, const char* outfile, bool rewr
 		APar_DeriveNewPath(ISObasemediafile, temp_file_name, 0, "-temp-", NULL);
 		temp_file = APar_OpenFile(temp_file_name, "wb");
 
-#if defined (DARWIN_PLATFORM)
-		APar_SupplySelectiveTypeCreatorCodes(ISObasemediafile, temp_file_name, forced_suffix_type); //provide type/creator codes for ".mp4" for randomly named temp files
-#endif
-
 	} else {
 		//case-sensitive compare means "The.m4a" is different from "THe.m4a"; on certiain Mac OS X filesystems a case-preservative but case-insensitive FS exists &
 		//AP probably will have a problem there. Output to a uniquely named file as I'm not going to poll the OS for the type of FS employed on the target drive.
@@ -4718,16 +4714,8 @@ void APar_WriteFile(const char* ISObasemediafile, const char* outfile, bool rewr
 			APar_DeriveNewPath(ISObasemediafile, temp_file_name, 0, "-temp-", NULL);
 			temp_file = APar_OpenFile(temp_file_name, "wb");
 
-#if defined (DARWIN_PLATFORM)
-			APar_SupplySelectiveTypeCreatorCodes(ISObasemediafile, temp_file_name, forced_suffix_type); //provide type/creator codes for ".mp4" for a fall-through randomly named temp files
-#endif
-
 		} else {
 			temp_file = APar_OpenFile(outfile, "wb");
-
-#if defined (DARWIN_PLATFORM)
-			APar_SupplySelectiveTypeCreatorCodes(ISObasemediafile, outfile, forced_suffix_type); //provide type/creator codes for ".mp4" for a user-defined output file
-#endif
 
 			}
 	}
