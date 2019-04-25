@@ -2164,7 +2164,12 @@ int real_main(int argc, char *argv[])
                 fclose(uuid_binfile);
 
             } else { //text type
-                APar_Unified_atom_Put(genericUUID, argv[optind +1], UTF8_iTunesStyle_Unlimited, 0, 0);
+				// this will give 4 NULL-bytes prior to the atom data
+				// ensure that data is only 16 bytes
+				char data[17];
+				memset(data, 0, 17);
+				strncpy(data, argv[optind+1], 16);
+                APar_Unified_atom_Put(genericUUID, data, UTF8_iTunesStyle_Unlimited, 0, 32);
             }
 
             break;
