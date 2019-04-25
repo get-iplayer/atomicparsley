@@ -11,7 +11,7 @@ AM_CPPFLAGS += -DDARWIN_PLATFORM
 AM_OBJCFLAGS = -DDARWIN_PLATFORM
 AM_CFLAGS = -DDARWIN_PLATFORM
 AM_CXXFLAGS = -DDARWIN_PLATFORM
-AM_LDFLAGS = -framework Cocoa -framework Foundation -framework IOKit
+AM_LDFLAGS = -framework Foundation -framework IOKit
 endif
 
 AtomicParsley_SOURCES = \
