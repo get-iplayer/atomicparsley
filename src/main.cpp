@@ -2708,7 +2708,7 @@ int real_main(int argc, char *argv[])
                     }
                 }
 
-                formed_keyword_struct = (char*)calloc(1, sizeof(char)* set_UTF16_text ? (keyword_strlen * 4) : (keyword_strlen * 2)); // *4 should carry utf16's BOM & TERM
+                formed_keyword_struct = (char*)calloc(1, sizeof(char)* (set_UTF16_text ? (keyword_strlen * 4) : (keyword_strlen * 2))); // *4 should carry utf16's BOM & TERM
                 uint32_t keyword_struct_bytes = APar_3GP_Keyword_atom_Format(keywords_globbed, keyword_count, set_UTF16_text, formed_keyword_struct);
 
                 for (uint8_t i_asset = 1; i_asset <= asset_iterations; i_asset++) {
