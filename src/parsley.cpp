@@ -2206,13 +2206,12 @@ void APar_MetaData_atomArtwork_Init(short atom_num, const char* artworkPath) {
 /*----------------------
 APar_MetaData_atomArtwork_Set
 	artworkPath - the path that was provided on a (hopefully) existant jpg/png file
-	env_PicOptions - picture embedding preferences from a 'export PIC_OPTIONS=foo' setting
 
     artwork gets stored under a single 'covr' atom, but with many 'data' atoms - each 'data' atom contains the binary data for each picture.
 		When the 'covr' atom is found, we create a sparse atom at the end of the existing 'data' atoms, and then perform any of the image manipulation
 		features on the image. The path of the file is returned to use for possible atom creation
 ----------------------*/
-void APar_MetaData_atomArtwork_Set(const char* artworkPath, char* env_PicOptions) {
+void APar_MetaData_atomArtwork_Set(const char* artworkPath) {
 	if (metadata_style == ITUNES_STYLE) {
 		const char* artwork_atom = "moov.udta.meta.ilst.covr";
 		if (strcmp(artworkPath, "REMOVE_ALL") == 0) {
