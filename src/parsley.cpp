@@ -15,7 +15,7 @@
     cannot, write to the Free Software Foundation, 59 Temple Place
     Suite 330, Boston, MA 02111-1307, USA.  Or www.fsf.org
 
-    Copyright ©2005-2007 puck_lock
+    Copyright ï¿½2005-2007 puck_lock
     with contributions from others; see the CREDITS file
 
     ----------------------
@@ -2161,7 +2161,7 @@ APar_MetaData_atomGenre_Set
 	atomPayload - the desired string value of the genre
 
     genre is special in that it gets carried on 2 atoms. A standard genre (as listed in ID3v1GenreList) is represented as a number on a 'gnre' atom
-		any value other than those, and the genre is placed as a string onto a '©gen' atom. Only one or the other can be present. So if atomPayload is a
+		any value other than those, and the genre is placed as a string onto a 'ï¿½gen' atom. Only one or the other can be present. So if atomPayload is a
 		non-NULL value, first try and match the genre into the ID3v1GenreList standard genres. Try to remove the other type of genre atom, then find or
 		create the new genre atom and put the data manually onto the atom.
 ----------------------*/
@@ -2169,8 +2169,8 @@ void APar_MetaData_atomGenre_Set(const char* atomPayload) {
 	if (metadata_style == ITUNES_STYLE) {
 		const char* standard_genre_atom = "moov.udta.meta.ilst.gnre";
 		const char* std_genre_data_atom = "moov.udta.meta.ilst.gnre.data";
-		const char* custom_genre_atom = "moov.udta.meta.ilst.©gen";
-		const char* cstm_genre_data_atom = "moov.udta.meta.ilst.©gen.data";
+		const char* custom_genre_atom = "moov.udta.meta.ilst.ï¿½gen";
+		const char* cstm_genre_data_atom = "moov.udta.meta.ilst.ï¿½gen.data";
 
 		if ( strlen(atomPayload) == 0) {
 			APar_RemoveAtom(std_genre_data_atom, VERSIONED_ATOM, 0); //find the atom; don't create if it's "" to remove
@@ -2184,13 +2184,13 @@ void APar_MetaData_atomGenre_Set(const char* atomPayload) {
 			modified_atoms = true;
 
 			if (genre_number != 0) {
-				//first find if a custom genre atom ("©gen") exists; erase the custom-string genre atom in favor of the standard genre atom
+				//first find if a custom genre atom ("ï¿½gen") exists; erase the custom-string genre atom in favor of the standard genre atom
 
 				AtomicInfo* verboten_genre_atom = APar_FindAtom(custom_genre_atom, false, SIMPLE_ATOM, 0);
 
 				if (verboten_genre_atom != NULL) {
 					if (strlen(verboten_genre_atom->AtomicName) > 0) {
-						if (strncmp(verboten_genre_atom->AtomicName, "©gen", 4) == 0) {
+						if (strncmp(verboten_genre_atom->AtomicName, "ï¿½gen", 4) == 0) {
 							APar_RemoveAtom(cstm_genre_data_atom, VERSIONED_ATOM, 0);
 						}
 					}
@@ -2236,7 +2236,7 @@ void APar_MetaData_atomLyrics_Set(const char* lyricsPath) {
 		APar_Verify__udta_meta_hdlr__atom();
 		modified_atoms = true;
 
-		AtomicInfo* lyricsData_atom = APar_FindAtom("moov.udta.meta.ilst.©lyr.data", true, VERSIONED_ATOM, 0);
+		AtomicInfo* lyricsData_atom = APar_FindAtom("moov.udta.meta.ilst.ï¿½lyr.data", true, VERSIONED_ATOM, 0);
 		APar_MetaData_atom_QuickInit(lyricsData_atom->AtomicNumber, AtomFlags_Data_Text, 0, file_len + 1);
 
 		FILE* lyrics_file = APar_OpenFile(lyricsPath, "rb");
@@ -2291,7 +2291,7 @@ APar_MetaData_atomArtwork_Set
 
     artwork gets stored under a single 'covr' atom, but with many 'data' atoms - each 'data' atom contains the binary data for each picture.
 		When the 'covr' atom is found, we create a sparse atom at the end of the existing 'data' atoms, and then perform any of the image manipulation
-		features on the image. The path of the file (either original, modified artwork, or both) are returned to use for possible atom creation
+		features on the image. The path of the file is returned to use for possible atom creation
 ----------------------*/
 void APar_MetaData_atomArtwork_Set(const char* artworkPath, char* env_PicOptions) {
 	if (metadata_style == ITUNES_STYLE) {
@@ -2301,43 +2301,13 @@ void APar_MetaData_atomArtwork_Set(const char* artworkPath, char* env_PicOptions
 
 		} else {
 			APar_Verify__udta_meta_hdlr__atom();
-
 			modified_atoms = true;
 			AtomicInfo* desiredAtom = APar_FindAtom(artwork_atom, true, SIMPLE_ATOM, 0);
 			AtomicInfo sample_data_atom = { 0 };
-
-#if defined (DARWIN_PLATFORM)
-			// used on Darwin adding a 2nd image (the original)
-			short parent_atom = desiredAtom->AtomicNumber;
-#endif
-
 			APar_CreateSurrogateAtom(&sample_data_atom, "data", 6, VERSIONED_ATOM, 0, NULL, 0);
 			desiredAtom = APar_CreateSparseAtom(&sample_data_atom, desiredAtom, APar_FindLastChild_of_ParentAtom(desiredAtom->AtomicNumber) );
-
-#if defined (DARWIN_PLATFORM)
-			//determine if any picture preferences will impact the picture file in any way
-			myPicturePrefs = APar_ExtractPicPrefs(env_PicOptions);
-
-			char* resized_filepath = (char*)calloc(1, sizeof(char)*MAXPATHLEN+1);
-
-			if ( ResizeGivenImage(artworkPath , myPicturePrefs, resized_filepath) ) {
-				APar_MetaData_atomArtwork_Init(desiredAtom->AtomicNumber, resized_filepath);
-
-				if (myPicturePrefs.addBOTHpix) {
-					//create another sparse atom to hold the new image data
-					desiredAtom = APar_CreateSparseAtom(&sample_data_atom, desiredAtom, APar_FindLastChild_of_ParentAtom(parent_atom) );
-					APar_MetaData_atomArtwork_Init(desiredAtom->AtomicNumber, artworkPath);
-					if (myPicturePrefs.removeTempPix) remove(resized_filepath);
-				}
-			} else {
-				APar_MetaData_atomArtwork_Init(desiredAtom->AtomicNumber, artworkPath);
-			}
-			free(resized_filepath);
-			resized_filepath=NULL;
-#else
-			//perhaps some libjpeg based resizing/modification for non-Mac OS X based platforms
+			//perhaps some libjpeg based resizing/modification
 			APar_MetaData_atomArtwork_Init(desiredAtom->AtomicNumber, artworkPath);
-#endif
 		}
 		APar_FlagMovieHeader();
 	} ////end if (metadata_style == ITUNES_STYLE)
