@@ -18,7 +18,7 @@
     cannot, write to the Free Software Foundation, 59 Temple Place
     Suite 330, Boston, MA 02111-1307, USA.  Or www.fsf.org
 
-    Copyright ©2005-2007 puck_lock
+    Copyright ï¿½2005-2007 puck_lock
     with contributions from others; see the CREDITS file
                                                                    */
 //==================================================================//
@@ -221,8 +221,7 @@ void APar_atom_Binary_Put(AtomicInfo* target_atom, const char* binary_data,
   uint32_t bytecount, uint64_t atomic_data_offset);
 
 /* iTunes-style metadata */
-void APar_MetaData_atomArtwork_Set(const char* artworkPath,
-  char* env_PicOptions);
+void APar_MetaData_atomArtwork_Set(const char* artworkPath);
 
 void APar_MetaData_atomGenre_Set(const char* atomPayload);
 void APar_MetaData_atomLyrics_Set(const char* lyricsPath);
