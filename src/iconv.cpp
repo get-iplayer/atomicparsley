@@ -15,7 +15,7 @@
     cannot, write to the Free Software Foundation, 59 Temple Place
     Suite 330, Boston, MA 02111-1307, USA.  Or www.fsf.org
 
-    Copyright ©2005-2007 puck_lock
+    Copyright Â©2005-2007 puck_lock
     with contributions from others; see the CREDITS file
 */
 //==================================================================//
@@ -52,6 +52,7 @@ ings in this Software without prior written authorization from him.
 
 #include "AtomicParsley.h"
 
+#if defined (_WIN32) && !defined (__CYGWIN__)
 const unsigned short cp437upperbytes[128] = {
 	0x00C7, 0x00FC, 0x00E9, 0x00E2, 0x00E4, 0x00E0, 0x00E5, 0x00E7,
 	0x00EA, 0x00EB, 0x00E8, 0x00EF, 0x00EE, 0x00EC, 0x00C4, 0x00C5,
@@ -146,6 +147,7 @@ const unsigned short cp858upperbytes[128] = {
 	0x00AD, 0x00B1, 0x2017, 0x00BE, 0x00B6, 0x00A7, 0x00F7, 0x00B8,
 	0x00B0, 0x00A8, 0x00B7, 0x00B9, 0x00B3, 0x00B2, 0x25A0, 0x00A0
 };
+#endif
 
 //==================================================================//
 // utf conversion functions from libxml2
