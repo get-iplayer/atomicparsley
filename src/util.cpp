@@ -15,7 +15,7 @@
     cannot, write to the Free Software Foundation, 59 Temple Place
     Suite 330, Boston, MA 02111-1307, USA.  Or www.fsf.org
 
-    Copyright ©2006-2007 puck_lock
+    Copyright Â©2006-2007 puck_lock
     with contributions from others; see the CREDITS file
 		
 		----------------------
@@ -106,14 +106,17 @@ openSomeFile
     take an ascii/utf8 filepath and either open or close it; used for the main ISO Base Media File; store the resulting FILE* in a global source_file
 ----------------------*/
 FILE* APar_OpenISOBaseMediaFile(const char* utf8file, bool open) {
-	if ( open && !file_opened) {
-		source_file = APar_OpenFile(utf8file, "rb");
-		if (source_file != NULL) {
-			file_opened = true;
+	if (open) {
+		if (!file_opened) {
+			source_file = APar_OpenFile(utf8file, "rb");
+			if (source_file != NULL) {
+				file_opened = true;
+			}
 		}
-	} else {
+	} else if (file_opened) {
 		fclose(source_file);
 		file_opened = false;
+		source_file = NULL;
 	}
 	return source_file;
 }
@@ -316,7 +319,7 @@ void APar_UnpackLanguage(unsigned char lang_code[], uint16_t packed_language) {
 
 uint16_t PackLanguage(const char* language_code, uint8_t lang_offset) { //?? is there a problem here? und does't work http://www.w3.org/WAI/ER/IG/ert/iso639.htm
 	//I think Apple's 3gp asses decoder is a little off. First, it doesn't support a lot of those 3 letter language codes above on that page. for example 'zul' blocks *all* metadata from showing up. 'fre' is a no-no, but 'fra' is fine.
-	//then, the spec calls for all strings to be null terminated. So then why does a '© 2005' (with a NULL at the end) show up as '© 2005' in 'pol', but '© 2005 ?' in 'fas' Farsi? Must be Apple's implementation, because the files are identical except for the uint16_t lang setting.
+	//then, the spec calls for all strings to be null terminated. So then why does a 'Â© 2005' (with a NULL at the end) show up as 'Â© 2005' in 'pol', but 'Â© 2005 ?' in 'fas' Farsi? Must be Apple's implementation, because the files are identical except for the uint16_t lang setting.
 	
 	uint16_t packed_language = 0;
 	
