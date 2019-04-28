@@ -911,7 +911,7 @@ int test_conforming_alpha_string(char* in_string) {
 	}
 	
 	while (valid_bytes < string_len) {
-		if ( (*test_str >= 65  && *test_str <= 90) || (*test_str >= 97 && *test_str <= 122) || *test_str == 95 || (*test_str >= 48  && *test_str <= 57) ) {
+		if ( (*test_str >= 65  && *test_str <= 90) || (*test_str >= 97 && *test_str <= 122) || *test_str == 95 || (*test_str >= 48  && *test_str <= 57) || *test_str == 32 ) {
 			valid_bytes++;
 		} else {
 			break;
