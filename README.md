@@ -2,6 +2,11 @@
 
 This is a copy of the [BitBucket repo](https://bitbucket.org/wez/atomicparsley) of this project, because it's more up to date than the [Github repo](https://github.com/wez/atomicparsley) by the same author.
 
+Changes in this version:
+
+* A `.gitignore` file to hide the bits created by autoconf/automake. 
+* `MAX_ATOMS` has been [bumped from 1024 to 2048](https://github.com/benfry/atomicparsley/commit/a66918b5c76d21f94cdd0f87a9793f729cb4a7e5) to handle some newer files from the iTunes Store.
+
 
 ## Basic Instructions
 
