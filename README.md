@@ -1,5 +1,8 @@
 # AtomicParsley
 
+This is a copy of the [BitBucket repo](https://bitbucket.org/wez/atomicparsley) of this project, because it's more up to date than the [Github repo](https://github.com/wez/atomicparsley) by the same author.
+
+
 ## Basic Instructions
 
 If you are building from source you will need autoconf & automake (you will
