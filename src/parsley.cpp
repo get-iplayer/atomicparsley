@@ -847,6 +847,7 @@ void APar_AtomizeFileInfo(uint64_t Astart, uint64_t Alength,
 
 	if (atom_number < 0 || atom_number >= MAX_ATOMS) {
 		fprintf(stderr, "too many atoms\n");
+		// fprintf(stderr, "index %d is too many atoms (max is %d)\n", atom_number, MAX_ATOMS);
 		abort();
 	}
 
