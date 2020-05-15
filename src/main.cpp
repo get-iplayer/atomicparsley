@@ -69,6 +69,7 @@
 #define Meta_description         'p'
 #define Meta_Rating              0xCB
 #define Meta_longdescription     'j'
+#define Meta_longdesc_file       0xCC
 #define Meta_TV_Network          'n'
 #define Meta_TV_ShowName         'H'
 #define Meta_TV_EpisodeNumber    'N'
@@ -186,6 +187,7 @@ static const char* shortHelp_text =
 "  --stik         (string*)    Sets the iTunes \"stik\" atom (see --longhelp)\n"
 "  --description  (string)     Set the description tag\n"
 "  --longdesc     (string)     Set the long description tag\n"
+"  --longdescFile (/path)      Set the long description to the content of a file\n"
 "  --storedesc    (string)     Set the store description tag\n"
 "  --TVNetwork    (string)     Set the TV Network name\n"
 "  --TVShowName   (string)     Set the TV Show name\n"
@@ -1076,6 +1078,7 @@ int real_main(int argc, char *argv[])
         { "stik",             required_argument,  NULL,           Meta_stik },
         { "description",      required_argument,  NULL,           Meta_description },
         { "longdesc",         required_argument,  NULL,           Meta_longdescription },
+        { "longdescFile",     required_argument,  NULL,           Meta_longdesc_file },
         { "storedesc",        required_argument,  NULL,           Meta_storedescription },
         { "Rating",           required_argument,  NULL,           Meta_Rating },
         { "TVNetwork",        required_argument,  NULL,           Meta_TV_Network },
@@ -1743,6 +1746,16 @@ int real_main(int argc, char *argv[])
 
             AtomicInfo* descriptionData_atom = APar_MetaData_atom_Init("moov.udta.meta.ilst.ldes.data", optarg, AtomFlags_Data_Text);
             APar_Unified_atom_Put(descriptionData_atom, optarg, UTF8_iTunesStyle_Unlimited, 0, 0);
+            break;
+        }
+
+        case Meta_longdesc_file : {
+            APar_ScanAtoms(ISObasemediafile);
+            if ( !APar_assert(metadata_style == ITUNES_STYLE, 1, "longdesc") ) {
+                break;
+            }
+
+            APar_MetaData_atomLongdesc_Set(optarg);
             break;
         }
 

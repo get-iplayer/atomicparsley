@@ -2183,6 +2183,45 @@ void APar_MetaData_atomLyrics_Set(const char* lyricsPath) {
 }
 
 /*----------------------
+APar_MetaData_atomLongdesc_Set
+	longdescPath - the path that was provided to a (hopefully) existent txt file
+
+	longdesc will be read from a file because they can contain multiple lines. Lines are stored with old Mac-style line endings (single carriage return).
+----------------------*/
+void APar_MetaData_atomLongdesc_Set(const char* longdescPath) {
+	if (metadata_style == ITUNES_STYLE) {
+		TestFileExistence(longdescPath, true);
+		uint64_t file_len = findFileSize(longdescPath);
+
+		APar_Verify__udta_meta_hdlr__atom();
+		modified_atoms = true;
+
+		AtomicInfo* longdescData_atom = APar_FindAtom("moov.udta.meta.ilst.ldes.data", true, VERSIONED_ATOM, 0);
+		APar_MetaData_atom_QuickInit(longdescData_atom->AtomicNumber, AtomFlags_Data_Text, 0, file_len + 1);
+
+		FILE* longdesc_file = APar_OpenFile(longdescPath, "rb");
+		uint64_t remaining = file_len;
+		char* dest = longdescData_atom->AtomicData + 4;
+		char* sol;
+		while (remaining && (sol = fgets(dest, remaining + 1, longdesc_file))) {
+			size_t len = strlen(sol); //NUL bytes in the file will cause parts of the text to be skipped
+			//normalize different EOL styles to carriage returns
+			if (sol[len-1] == '\n') {
+				if (sol[len-2] == '\r') sol[--len] = '\0';
+				else sol[len-1] = '\r';
+			}
+			remaining -= len;
+			dest += len;
+		}
+		longdescData_atom->AtomicLength += dest - (longdescData_atom->AtomicData + 4);
+		fclose(longdesc_file);
+
+		APar_FlagMovieHeader();
+	} //end if (metadata_style == ITUNES_STYLE)
+	return;
+}
+
+/*----------------------
 APar_MetaData_atomArtwork_Init
 	atom_num - the AtomicNumber of the atom in the parsedAtoms array (probably newly created)
 	artworkPath - the path that was provided on a (hopefully) existant jpg/png file
