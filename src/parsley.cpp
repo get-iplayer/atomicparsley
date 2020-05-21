@@ -2167,10 +2167,12 @@ void APar_MetaData_atomLyrics_Set(const char* lyricsPath) {
 		while (remaining && (sol = fgets(dest, remaining + 1, lyrics_file))) {
 			size_t len = strlen(sol); //NUL bytes in the file will cause parts of the text to be skipped
 			//normalize different EOL styles to carriage returns
+			/*
 			if (sol[len-1] == '\n') {
 				if (sol[len-2] == '\r') sol[--len] = '\0';
 				else sol[len-1] = '\r';
 			}
+			*/
 			remaining -= len;
 			dest += len;
 		}
@@ -2206,10 +2208,12 @@ void APar_MetaData_atomLongdesc_Set(const char* longdescPath) {
 		while (remaining && (sol = fgets(dest, remaining + 1, longdesc_file))) {
 			size_t len = strlen(sol); //NUL bytes in the file will cause parts of the text to be skipped
 			//normalize different EOL styles to carriage returns
+			/*
 			if (sol[len-1] == '\n') {
 				if (sol[len-2] == '\r') sol[--len] = '\0';
 				else sol[len-1] = '\r';
 			}
+			*/
 			remaining -= len;
 			dest += len;
 		}
