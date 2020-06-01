@@ -5,9 +5,9 @@ dnl Some intro checks and defines
 
 AC_PREREQ(2.50)
 
-AC_INIT([atomicparsley],[0.9.6],
+AC_INIT([atomicparsley],[0.9.7-get_iplayer.1],
   [http://bitbucket.org/wez/atomicparsley/issues/new/])
-  
+
 dnl Need to disable dependency tracking option so that the universal
 dnl build option works for OSX
 AM_INIT_AUTOMAKE([dist-bzip2 foreign no-dependencies subdir-objects -Wall])
