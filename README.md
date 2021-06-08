@@ -1,5 +1,15 @@
 # AtomicParsley
 
+This is a copy of the [BitBucket repo](https://bitbucket.org/wez/atomicparsley) of this project, because it's more up to date than the [Github repo](https://github.com/wez/atomicparsley) by the same author.
+
+Changes in this version:
+
+* A `.gitignore` file to hide the bits created by autoconf/automake. 
+* `MAX_ATOMS` has been [bumped from 1024 to 2048](https://github.com/benfry/atomicparsley/commit/a66918b5c76d21f94cdd0f87a9793f729cb4a7e5) to handle some newer files from the iTunes Store.
+* Changed `char` to `const char` in a couple places in the macOS-facing code.
+* Attempted to use `\uNNNN` escapes because of compiler warnings about `<A9>` and others being illegal characters, but was unsuccessful (came out as ?© in `--longhelp`). Parts of `main.cpp` use octal numbers for © and others, but not gonna fiddle with it further because it appears to be working in spite of the warnings.
+
+
 ## Basic Instructions
 
 If you are building from source you will need autoconf & automake (you will

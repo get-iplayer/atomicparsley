@@ -1,0 +1,25 @@
+# artifacts of the build process
+AtomicParsley
+*.o
+
+# artifaces of the configure process
+/Makefile
+/Makefile.in
+/aclocal.m4
+/autom4te.cache/
+/compile
+/config.guess
+/config.log
+/config.status
+/config.sub
+/configure
+/install-sh
+/missing
+/src/.dirstamp
+/src/config.h
+/src/config.h.in
+/src/stamp-h1
+
+# boogers left behind
+*~
+.DS_Store
