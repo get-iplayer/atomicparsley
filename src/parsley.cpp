@@ -15,7 +15,7 @@
     cannot, write to the Free Software Foundation, 59 Temple Place
     Suite 330, Boston, MA 02111-1307, USA.  Or www.fsf.org
 
-    Copyright ©2005-2007 puck_lock
+    Copyright Â©2005-2007 puck_lock
     with contributions from others; see the CREDITS file
 
     ----------------------
@@ -154,7 +154,8 @@ int APar_TestArtworkBinaryData(const char* artworkPath) {
 		APar_read64(twenty_byte_buffer, artfile, 0);
 		if ( strncmp(twenty_byte_buffer, "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A", 8) == 0 ) {
 			artwork_dataType = AtomFlags_Data_PNGBinary;
-		} else if ( strncmp(twenty_byte_buffer, "\xFF\xD8\xFF\xE0", 4) == 0 || memcmp(twenty_byte_buffer, "\xFF\xD8\xFF\xE1", 4) == 0 ) {
+		// test for all possible jfif app markers FFEx
+		} else if ( strncmp(twenty_byte_buffer, "\xFF\xD8\xFF", 3) == 0 && (*(twenty_byte_buffer+3) & 0xE0)) {
 			artwork_dataType = AtomFlags_Data_JPEGBinary;
 		} else {
 			fprintf(stdout, "AtomicParsley error: %s\n\t image file is not jpg/png and cannot be embedded.\n", artworkPath);
@@ -211,87 +212,6 @@ void APar_FreeMemory() {
 //                        Picture Preferences Functions                              //
 ///////////////////////////////////////////////////////////////////////////////////////
 
-#if defined (DARWIN_PLATFORM)
-PicPrefs APar_ExtractPicPrefs(char* env_PicOptions) {
-	if (!parsed_prefs) {
-
-		parsed_prefs = true; //only set default values & parse once
-
-		myPicturePrefs.max_dimension=0; //dimensions won't be used to alter image
-		myPicturePrefs.dpi = 72;
-		myPicturePrefs.max_Kbytes = 0; //no target size to shoot for
-		myPicturePrefs.allJPEG = false;
-		myPicturePrefs.allPNG = false;
-		myPicturePrefs.addBOTHpix = false;
-		myPicturePrefs.force_dimensions = false;
-		myPicturePrefs.force_height = 0;
-		myPicturePrefs.force_width = 0;
-		myPicturePrefs.removeTempPix = true; //we'll just make this the default
-
-		char* unparsed_opts = env_PicOptions;
-		if (env_PicOptions == NULL) return myPicturePrefs;
-
-		while (unparsed_opts[0] != 0) {
-			if (strncmp(unparsed_opts,"MaxDimensions=",14) == 0) {
-				unparsed_opts+=14;
-				myPicturePrefs.max_dimension = (int)strtol(unparsed_opts, NULL, 10);
-
-			} else if (strncmp(unparsed_opts,"DPI=",4) == 0) {
-				unparsed_opts+=4;
-				myPicturePrefs.dpi = (int)strtol(unparsed_opts, NULL, 10);
-
-			} else if (strncmp(unparsed_opts,"MaxKBytes=",10) == 0) {
-				unparsed_opts+=10;
-				myPicturePrefs.max_Kbytes = (int)strtol(unparsed_opts, NULL, 10)*1024;
-
-			} else if (strncmp(unparsed_opts,"AllPixJPEG=",11) == 0) {
-				unparsed_opts+=11;
-				if (strcmp(unparsed_opts, "true") == 0) {
-					myPicturePrefs.allJPEG = true;
-				}
-
-			} else if (strncmp(unparsed_opts,"AllPixPNG=",10) == 0) {
-				unparsed_opts+=10;
-				if (strcmp(unparsed_opts, "true") == 0) {
-					myPicturePrefs.allPNG = true;
-				}
-
-			} else if (strncmp(unparsed_opts,"AddBothPix=",11) == 0) {
-				unparsed_opts+=11;
-				if (strcmp(unparsed_opts, "true") == 0) {
-					myPicturePrefs.addBOTHpix = true;
-				}
-
-			} else if (strcmp(unparsed_opts,"SquareUp") == 0) {
-				unparsed_opts+=7;
-				myPicturePrefs.squareUp = true;
-
-			} else if (strcmp(unparsed_opts,"removeTempPix") == 0) {
-				unparsed_opts+=13;
-				myPicturePrefs.removeTempPix = true;
-
-			} else if (strcmp(unparsed_opts,"keepTempPix") == 0) { //NEW
-				unparsed_opts+=11;
-				myPicturePrefs.removeTempPix = false;
-
-			} else if (strncmp(unparsed_opts,"ForceHeight=",12) == 0) {
-				unparsed_opts+=12;
-				myPicturePrefs.force_height = strtol(unparsed_opts, NULL, 10);
-
-			} else if (strncmp(unparsed_opts,"ForceWidth=",11) == 0) {
-				unparsed_opts+=11;
-				myPicturePrefs.force_width = strtol(unparsed_opts, NULL, 10);
-
-			} else {
-				unparsed_opts++;
-			}
-		}
-	}
-
-	if (myPicturePrefs.force_height > 0 && myPicturePrefs.force_width > 0) myPicturePrefs.force_dimensions = true;
-	return myPicturePrefs;
-}
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //                            Locating/Finding Atoms                                 //
@@ -2162,7 +2082,7 @@ APar_MetaData_atomGenre_Set
 	atomPayload - the desired string value of the genre
 
     genre is special in that it gets carried on 2 atoms. A standard genre (as listed in ID3v1GenreList) is represented as a number on a 'gnre' atom
-		any value other than those, and the genre is placed as a string onto a '©gen' atom. Only one or the other can be present. So if atomPayload is a
+		any value other than those, and the genre is placed as a string onto a 'Â©gen' atom. Only one or the other can be present. So if atomPayload is a
 		non-NULL value, first try and match the genre into the ID3v1GenreList standard genres. Try to remove the other type of genre atom, then find or
 		create the new genre atom and put the data manually onto the atom.
 ----------------------*/
@@ -2170,8 +2090,8 @@ void APar_MetaData_atomGenre_Set(const char* atomPayload) {
 	if (metadata_style == ITUNES_STYLE) {
 		const char* standard_genre_atom = "moov.udta.meta.ilst.gnre";
 		const char* std_genre_data_atom = "moov.udta.meta.ilst.gnre.data";
-		const char* custom_genre_atom = "moov.udta.meta.ilst.©gen";
-		const char* cstm_genre_data_atom = "moov.udta.meta.ilst.©gen.data";
+		const char* custom_genre_atom = "moov.udta.meta.ilst.\251gen";
+		const char* cstm_genre_data_atom = "moov.udta.meta.ilst.\251gen.data";
 
 		if ( strlen(atomPayload) == 0) {
 			APar_RemoveAtom(std_genre_data_atom, VERSIONED_ATOM, 0); //find the atom; don't create if it's "" to remove
@@ -2185,13 +2105,13 @@ void APar_MetaData_atomGenre_Set(const char* atomPayload) {
 			modified_atoms = true;
 
 			if (genre_number != 0) {
-				//first find if a custom genre atom ("©gen") exists; erase the custom-string genre atom in favor of the standard genre atom
+				//first find if a custom genre atom ("Â©gen") exists; erase the custom-string genre atom in favor of the standard genre atom
 
 				AtomicInfo* verboten_genre_atom = APar_FindAtom(custom_genre_atom, false, SIMPLE_ATOM, 0);
 
 				if (verboten_genre_atom != NULL) {
 					if (strlen(verboten_genre_atom->AtomicName) > 0) {
-						if (strncmp(verboten_genre_atom->AtomicName, "©gen", 4) == 0) {
+						if (strncmp(verboten_genre_atom->AtomicName, "\251gen", 4) == 0) {
 							APar_RemoveAtom(cstm_genre_data_atom, VERSIONED_ATOM, 0);
 						}
 					}
@@ -2237,7 +2157,7 @@ void APar_MetaData_atomLyrics_Set(const char* lyricsPath) {
 		APar_Verify__udta_meta_hdlr__atom();
 		modified_atoms = true;
 
-		AtomicInfo* lyricsData_atom = APar_FindAtom("moov.udta.meta.ilst.©lyr.data", true, VERSIONED_ATOM, 0);
+		AtomicInfo* lyricsData_atom = APar_FindAtom("moov.udta.meta.ilst.\251lyr.data", true, VERSIONED_ATOM, 0);
 		APar_MetaData_atom_QuickInit(lyricsData_atom->AtomicNumber, AtomFlags_Data_Text, 0, file_len + 1);
 
 		FILE* lyrics_file = APar_OpenFile(lyricsPath, "rb");
@@ -2288,13 +2208,12 @@ void APar_MetaData_atomArtwork_Init(short atom_num, const char* artworkPath) {
 /*----------------------
 APar_MetaData_atomArtwork_Set
 	artworkPath - the path that was provided on a (hopefully) existant jpg/png file
-	env_PicOptions - picture embedding preferences from a 'export PIC_OPTIONS=foo' setting
 
     artwork gets stored under a single 'covr' atom, but with many 'data' atoms - each 'data' atom contains the binary data for each picture.
 		When the 'covr' atom is found, we create a sparse atom at the end of the existing 'data' atoms, and then perform any of the image manipulation
-		features on the image. The path of the file (either original, modified artwork, or both) are returned to use for possible atom creation
+		features on the image. The path of the file is returned to use for possible atom creation
 ----------------------*/
-void APar_MetaData_atomArtwork_Set(const char* artworkPath, char* env_PicOptions) {
+void APar_MetaData_atomArtwork_Set(const char* artworkPath) {
 	if (metadata_style == ITUNES_STYLE) {
 		const char* artwork_atom = "moov.udta.meta.ilst.covr";
 		if (strcmp(artworkPath, "REMOVE_ALL") == 0) {
@@ -2302,43 +2221,13 @@ void APar_MetaData_atomArtwork_Set(const char* artworkPath, char* env_PicOptions
 
 		} else {
 			APar_Verify__udta_meta_hdlr__atom();
-
 			modified_atoms = true;
 			AtomicInfo* desiredAtom = APar_FindAtom(artwork_atom, true, SIMPLE_ATOM, 0);
 			AtomicInfo sample_data_atom = { 0 };
-
-#if defined (DARWIN_PLATFORM)
-			// used on Darwin adding a 2nd image (the original)
-			short parent_atom = desiredAtom->AtomicNumber;
-#endif
-
 			APar_CreateSurrogateAtom(&sample_data_atom, "data", 6, VERSIONED_ATOM, 0, NULL, 0);
 			desiredAtom = APar_CreateSparseAtom(&sample_data_atom, desiredAtom, APar_FindLastChild_of_ParentAtom(desiredAtom->AtomicNumber) );
-
-#if defined (DARWIN_PLATFORM)
-			//determine if any picture preferences will impact the picture file in any way
-			myPicturePrefs = APar_ExtractPicPrefs(env_PicOptions);
-
-			char* resized_filepath = (char*)calloc(1, sizeof(char)*MAXPATHLEN+1);
-
-			if ( ResizeGivenImage(artworkPath , myPicturePrefs, resized_filepath) ) {
-				APar_MetaData_atomArtwork_Init(desiredAtom->AtomicNumber, resized_filepath);
-
-				if (myPicturePrefs.addBOTHpix) {
-					//create another sparse atom to hold the new image data
-					desiredAtom = APar_CreateSparseAtom(&sample_data_atom, desiredAtom, APar_FindLastChild_of_ParentAtom(parent_atom) );
-					APar_MetaData_atomArtwork_Init(desiredAtom->AtomicNumber, artworkPath);
-					if (myPicturePrefs.removeTempPix) remove(resized_filepath);
-				}
-			} else {
-				APar_MetaData_atomArtwork_Init(desiredAtom->AtomicNumber, artworkPath);
-			}
-			free(resized_filepath);
-			resized_filepath=NULL;
-#else
-			//perhaps some libjpeg based resizing/modification for non-Mac OS X based platforms
+			//perhaps some libjpeg based resizing/modification
 			APar_MetaData_atomArtwork_Init(desiredAtom->AtomicNumber, artworkPath);
-#endif
 		}
 		APar_FlagMovieHeader();
 	} ////end if (metadata_style == ITUNES_STYLE)
@@ -4819,10 +4708,6 @@ void APar_WriteFile(const char* ISObasemediafile, const char* outfile, bool rewr
 		APar_DeriveNewPath(ISObasemediafile, temp_file_name, 0, "-temp-", NULL);
 		temp_file = APar_OpenFile(temp_file_name, "wb");
 
-#if defined (DARWIN_PLATFORM)
-		APar_SupplySelectiveTypeCreatorCodes(ISObasemediafile, temp_file_name, forced_suffix_type); //provide type/creator codes for ".mp4" for randomly named temp files
-#endif
-
 	} else {
 		//case-sensitive compare means "The.m4a" is different from "THe.m4a"; on certiain Mac OS X filesystems a case-preservative but case-insensitive FS exists &
 		//AP probably will have a problem there. Output to a uniquely named file as I'm not going to poll the OS for the type of FS employed on the target drive.
@@ -4831,16 +4716,8 @@ void APar_WriteFile(const char* ISObasemediafile, const char* outfile, bool rewr
 			APar_DeriveNewPath(ISObasemediafile, temp_file_name, 0, "-temp-", NULL);
 			temp_file = APar_OpenFile(temp_file_name, "wb");
 
-#if defined (DARWIN_PLATFORM)
-			APar_SupplySelectiveTypeCreatorCodes(ISObasemediafile, temp_file_name, forced_suffix_type); //provide type/creator codes for ".mp4" for a fall-through randomly named temp files
-#endif
-
 		} else {
 			temp_file = APar_OpenFile(outfile, "wb");
-
-#if defined (DARWIN_PLATFORM)
-			APar_SupplySelectiveTypeCreatorCodes(ISObasemediafile, outfile, forced_suffix_type); //provide type/creator codes for ".mp4" for a user-defined output file
-#endif
 
 			}
 	}
@@ -4855,7 +4732,7 @@ void APar_WriteFile(const char* ISObasemediafile, const char* outfile, bool rewr
 
 		if (dynUpd.updage_by_padding) {
 			thisAtomNumber = dynUpd.initial_update_atom->AtomicNumber;
-			fprintf(stdout, "\n Updating metadata... ");
+			fprintf(stdout, "\n Updating metadata... \n");
 		} else {
 			fprintf(stdout, "\n Started writing to %s.\n",
 				outfile ? outfile : "temp file");

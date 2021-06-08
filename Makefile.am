@@ -8,11 +8,7 @@ AM_CPPFLAGS = -DHAVE_CONFIG_H
 
 if DARWIN
 AM_CPPFLAGS += -DDARWIN_PLATFORM
-AM_OBJCFLAGS = -DDARWIN_PLATFORM $(UNIVERSAL_FLAGS)
-AM_CFLAGS = -DDARWIN_PLATFORM $(UNIVERSAL_FLAGS)
-AM_CXXFLAGS = -DDARWIN_PLATFORM $(UNIVERSAL_FLAGS)
-AM_LDFLAGS = $(UNIVERSAL_FLAGS) \
-	-framework Cocoa -framework Foundation -framework IOKit
+AM_LDFLAGS = -framework Foundation -framework IOKit
 endif
 
 AtomicParsley_SOURCES = \
@@ -29,17 +25,6 @@ AtomicParsley_SOURCES = \
 	src/compress.cpp \
 	src/main.cpp 
 
-# If you see a warning about this rule overriding an automake provided rule,
-# that's fine; we do this because we want to build on versions of autoconf
-# and automake prior to 1.12.1
-.mm.o:
-	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_OBJCFLAGS) $(OBJCFLAGS) -c -o $@ $<
-
-if DARWIN
-AtomicParsley_SOURCES += \
-	src/nsfile.mm \
-	src/nsimage.mm
-endif
 
 if NEED_GETOPT
 AtomicParsley_SOURCES += \

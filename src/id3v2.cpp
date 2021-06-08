@@ -15,7 +15,7 @@
     cannot, write to the Free Software Foundation, 59 Temple Place
     Suite 330, Boston, MA 02111-1307, USA.  Or www.fsf.org
 
-    Copyright ©2006-2007 puck_lock
+    Copyright ï¿½2006-2007 puck_lock
     with contributions from others; see the CREDITS file
                                                                    */
 //==================================================================//
@@ -1976,7 +1976,7 @@ ID3v2Frame* APar_FindFrame(ID3v2Tag* id3v2tag, const char* frame_str, int frameI
 		if (supplemental_matching != 0) {
 
 			//match on description + frame name
-			if ((supplemental_matching & 0x01) && (evalframe->ID3v2_Frame_ID == frameID)) {
+			if (supplemental_matching & 0x01 && evalframe->ID3v2_Frame_ID == frameID) {
 				char* utf8_descrip = APar_ConvertField_to_UTF8(evalframe, ID3_DESCRIPTION_FIELD);
 				if (utf8_descrip != NULL) {
 					if (strcmp(adjunct_payloads->descripArg, utf8_descrip) == 0) {

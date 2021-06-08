@@ -31,16 +31,7 @@ zlib  - used to compress ID3 frames & expand already compressed frames
 
 ## For Mac OS X users:
 
-The default is to build a universal binary.
-
-switching between a universal build and a platform dependent build should be
-accompanied by a "make maintainter-clean" and a ./configure between builds.
-
-To *not* build a Mac OS X universal binary:
-
-      % make maintainer-clean
-      % ./configure --disable-universal
-      % make
+To build on Mac OS X / macOS just do a straight forward as shown above.
 
 
 ## For Windows users:

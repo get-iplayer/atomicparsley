@@ -14,45 +14,17 @@ AM_INIT_AUTOMAKE([dist-bzip2 foreign no-dependencies subdir-objects -Wall])
 
 AC_CANONICAL_HOST
 
-AC_ARG_ENABLE(universal, dnl
-[  --enable-universal     build a universal binary on Mac OS X [default=no]],
-              universal=$enableval, universal=no)
 
 case $host in
   *darwin*)
-
-    AP_NATIVE_ARCH=`arch`
-    AP_64_ARCH="x86_64"
-    case $AP_NATIVE_ARCH in
-      ppc*)
-        AP_CROSS_ARCH="i386"
-      ;;
-    *)
-        AP_CROSS_ARCH="ppc"
-      ;;
-    esac
-    AC_SUBST(AP_CROSS_ARCH)
-    AC_SUBST(AP_NATIVE_ARCH)
-    AC_SUBST(AP_64_ARCH)
-
     HAVE_DARWIN_PLATFORM="true"
     AC_SUBST(HAVE_DARWIN_PLATFORM)
-
-    AC_MSG_CHECKING([if we are os/x universal])
-    if test "$universal" = "yes" ; then
-      AC_MSG_RESULT([building for $AP_NATIVE_ARCH, $AP_CROSS_ARCH, and $AP_64_ARCH])
-      UNIVERSAL_FLAGS="-arch $AP_NATIVE_ARCH -arch $AP_CROSS_ARCH -arch $AP_64_ARCH"
-      AC_SUBST(UNIVERSAL_FLAGS)
-    fi
-    AC_MSG_RESULT([no])
     ;;
   *)
-    universal="no"
     HAVE_DARWIN_PLATFORM="false"
     ;;
 esac
 
-AC_SUBST(universal)
 
 AC_CONFIG_SRCDIR(src/parsley.cpp)
 AC_CONFIG_HEADER(src/config.h)
@@ -164,7 +136,6 @@ fi
 
 AM_CONDITIONAL([NEED_GETOPT], [test x$HAVE_GETOPT_H = x])
 AM_CONDITIONAL([DARWIN], [test x$HAVE_DARWIN_PLATFORM = xtrue])
-AM_CONDITIONAL([UNIVERSAL], [test x$universal = xyes])
 
 AC_OUTPUT([Makefile])
 
@@ -179,10 +150,6 @@ echo "|             YOUR CONFIGURATION               |"
 echo "+----------------------------------------------+"
 
 echo "  Version:           $PACKAGE_VERSION"
-
-if test "$universal" = "yes" ; then
-	echo "  universal build:   enabled"
-fi	
 
 if test "$debug" = "no" ; then
 	echo "  debug build:       disabled"
